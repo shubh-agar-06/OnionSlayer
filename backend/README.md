@@ -2,7 +2,7 @@
 
 Flask backend for the vendor identity-resolution graph and analysis APIs. It uses MySQL, NetworkX, and the normalized identity schema.
 
-For a complete fresh-clone setup, use the root [README.md](../README.md) and run `..\setup.ps1` from the repository root.
+For a complete fresh-clone setup, use the root [README.md](../README.md). The repository does not include the legacy `data\main_db.sql` dump, so the normal setup uses the committed schema and optional generated demo data.
 
 ## Manual setup
 
@@ -14,10 +14,9 @@ python -m venv .venv
 python -m pip install -r .\requirements.txt
 ```
 
-Import the legacy data and canonical schema, then migrate the data:
+Initialize the schema and migrate any available data:
 
 ```powershell
-Get-Content .\data\main_db.sql -Raw | mysql -u root -p main_db
 Get-Content .\backend\database\schema.sql -Raw | mysql -u root -p main_db
 cd .\backend
 python -m services.migration_service

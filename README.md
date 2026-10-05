@@ -1,117 +1,131 @@
-# CTI Platform
+# Onion Slayer
 
-A Flask and React dashboard for vendor identity resolution and marketplace relationship analysis.
+## Dark Web Threat Actor De-anonymization Platform
 
-## Prerequisites
+**Smart India Hackathon problem statement:** Dark web threat actor de-anonymization  
+**Organization:** National Technical Research Organisation (NTRO)
 
-- Windows PowerShell
-- Python 3.11 or newer
-- Node.js LTS and npm
-- MySQL 8.x with the MySQL client (`mysql.exe`)
+Onion Slayer is a cyber threat intelligence platform that helps analysts correlate dark-web marketplace identities and investigate relationships between vendors, aliases, PGP keys, wallets and infrastructure indicators.
 
-## First-time setup
+The platform provides:
 
-Open PowerShell in the repository root. If MySQL uses a password other than the default expected by the backend, set it in this terminal before running setup:
+- Vendor and identity resolution across marketplace data
+- Interactive relationship graph visualization
+- Search across vendors and identifiers
+- Infrastructure indicator analysis
+- Timeline and confidence analysis
+- Analyst review of identity suggestions
+- CSV, JSON and report exports
+
+## Technology stack
+
+- **Frontend:** React, Vite, Cytoscape.js and React Force Graph
+- **Backend:** Python, Flask and NetworkX
+- **Database:** MySQL 8.x
+- **Analysis:** SQLAlchemy, scikit-learn, Sentence Transformers and PyTorch
+
+## Quick start — Windows
+
+### Prerequisites
+
+Install and start:
+
+- Python 3.11+
+- Node.js LTS
+- MySQL 8.x
+
+### 1. Clone the project
+
+```powershell
+git clone <repository-url>
+cd OnionSlayer
+```
+
+### 2. Run setup
+
+Replace the password with your MySQL `root` password:
 
 ```powershell
 $env:DB_PASSWORD="your_mysql_password"
-.\setup.ps1
+.\setup.ps1 -SkipDataImport -GenerateSynthetic
 ```
 
-The script will:
+This creates the Python environment, initializes the database schema, generates demo data and installs frontend dependencies.
 
-1. Create `.venv` if needed and install the root Python requirements.
-2. Create `main_db` if needed.
-3. Import the committed legacy data dump.
-4. Create normalized and runtime tables from `backend/database/schema.sql`.
-5. Migrate legacy vendor/profile/PGP data into the normalized identity tables.
-6. Install frontend packages with `npm ci`.
-
-The data dump is large. To provision only an empty database schema, skip importing it:
-
-```powershell
-.\setup.ps1 -SkipDataImport
-```
-
-ShadowBay and NightMarket are generated synthetic marketplaces and are not included in the legacy dump. Generate them explicitly after the baseline setup:
-
-```powershell
-.\setup.ps1 -SkipDataImport:$false -GenerateSynthetic
-```
-
-Do not run that option if you do not want synthetic records added to the database.
-
-If PowerShell blocks scripts, enable locally for your user:
+If PowerShell blocks the script:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
-If `mysql.exe` is installed but not on PATH, `setup.ps1` checks the standard MySQL and XAMPP installation folders. Otherwise install the MySQL client or add its `bin` directory to PATH.
+### 3. Start the backend
 
-## Run the application
-
-Start the backend in one terminal:
+Open PowerShell terminal 1:
 
 ```powershell
+$env:DB_HOST="localhost"
+$env:DB_USER="root"
+$env:DB_PASSWORD="your_mysql_password"
+$env:DB_NAME="main_db"
+
 cd backend
-..\.venv\Scripts\Activate.ps1
-python app.py
+..\.venv\Scripts\python.exe app.py
 ```
 
-The backend API runs at `http://localhost:5000`.
+Backend: [http://localhost:5000](http://localhost:5000)
 
-Start the frontend in a second terminal:
+### 4. Start the frontend
+
+Open PowerShell terminal 2:
 
 ```powershell
 cd frontend
 npm run dev
 ```
 
-Open the `Local` URL printed by Vite, normally `http://localhost:5173`.
+Open the URL shown by Vite, normally [http://localhost:5173](http://localhost:5173).
 
-If another Vite application already uses port 5173, run this project on another port:
+## Configuration
 
-```powershell
-npm run dev -- --port 5174
-```
+| Variable | Default |
+|---|---|
+| `DB_HOST` | `localhost` |
+| `DB_PORT` | `3306` |
+| `DB_USER` | `root` |
+| `DB_PASSWORD` | `root` |
+| `DB_NAME` | `main_db` |
 
-## Database configuration
-
-The backend reads these environment variables:
-
-- `DB_HOST` (default `localhost`)
-- `DB_USER` (default `root`)
-- `DB_PASSWORD` (default `root`)
-- `DB_NAME` (default `main_db`)
-
-These variables must be set in the terminal that starts the backend. Do not commit real passwords.
-
-## Useful checks
+## Verify
 
 ```powershell
-# Check the backend
 Invoke-RestMethod http://localhost:5000/
-
-# Check marketplace data
-$mysql = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
-& $mysql -u root -p -e "USE main_db; SELECT market_id, COUNT(*) AS vendors FROM vendors GROUP BY market_id ORDER BY market_id;"
 ```
-
-Expected synthetic marketplace IDs are `101` for ShadowBay and `102` for NightMarket.
 
 ## Development commands
 
-Backend tests, from `backend`:
+Backend tests:
 
 ```powershell
-python -m unittest discover -s tests
+cd backend
+..\.venv\Scripts\python.exe -m unittest discover -s tests
 ```
 
-Frontend build, from `frontend`:
+Frontend build:
 
 ```powershell
+cd frontend
 npm run build
 ```
 
-More focused notes are available in [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md).
+## Project structure
+
+```text
+OnionSlayer/
+├── backend/       Flask API, analysis services, graph logic and tests
+├── data/          Sample marketplace and infrastructure datasets
+├── frontend/      React analyst dashboard
+├── setup.ps1      Windows setup script
+└── requirements.txt
+```
+
+For more details, see [backend/README.md](backend/README.md), [frontend/README.md](frontend/README.md), and [DEMO_TEST_CASES_PLAYBOOK.md](DEMO_TEST_CASES_PLAYBOOK.md).
