@@ -123,9 +123,10 @@ npm run build
 OnionSlayer/
 ├── backend/       Flask API, analysis services, graph logic and tests
 ├── data/          Sample marketplace and infrastructure datasets
+├── docs/           Presentation, architecture and demo documentation
 ├── frontend/      React analyst dashboard
 ├── setup.ps1      Windows setup script
 └── requirements.txt
 ```
 
-For more details, see [backend/README.md](backend/README.md), [frontend/README.md](frontend/README.md), and [DEMO_TEST_CASES_PLAYBOOK.md](DEMO_TEST_CASES_PLAYBOOK.md).
+For more details, see [backend/README.md](backend/README.md), [frontend/README.md](frontend/README.md), and the [documentation folder](docs/).
